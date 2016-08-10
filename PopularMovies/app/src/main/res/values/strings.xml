@@ -1,0 +1,33 @@
+<resources>
+    <string name="app_name">PopularMovies</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_movie_details">MovieDetailsActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+    <string name = "sort_preference_title">SortBy</string>
+    <string name="sort_preference_key">sort_order</string>
+    <string name="sort_preference_popular">Popular</string>
+    <string name = "network_dialog_title">Network Error</string>
+    <string name="network_dialog_message">Sorry.Internet Connection not available</string>
+    <string name = "action_refresh">Refresh</string>
+    <string name="preference_change_key">isPreferenceChanged</string>
+    <string name="movie_thumbnail_fragment">moviefragment</string>
+    <string name="movie_detail_fragment">mDetails</string>
+    <string name="rating">vote_average</string>
+    <string name="title">title</string>
+    <string name="releaseDate">release_date</string>
+    <string name="poster">poster_path</string>
+    <string name="overview">overview</string>
+    <string name="rate_on_ten">/10</string>
+    <string name="movie_details">movieData</string>
+    <string name="extract_movie_log_tag">extractMovies</string>
+    <string name="result_key">results</string>
+    <string name="apiKeyQueryStringParameter">api_key</string>
+    <string name="asyncTask_log_tag">AsyncTask</string>
+    <string name="popular_preference_key">popular</string>
+    <string name="okButtonTitle">OK</string>
+    <string name="settings_fragment_key">settingsFragment</string>
+    <string name="overviewHeading">Overview</string>
+    <string name="ratingHeading">Rating</string>
+    <string name="releaseDateHeading">Release Date</string>
+</resources>

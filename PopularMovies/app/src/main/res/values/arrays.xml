@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="SortBy_Entries">
+        <item >Popular</item>
+        <item>TopRated</item>
+    </array>
+
+    <array name="SortBy_Keys">
+        <item>popular</item>
+        <item>top_rated</item>
+    </array>
+</resources>

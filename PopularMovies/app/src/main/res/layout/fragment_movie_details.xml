@@ -1,0 +1,111 @@
+<ScrollView
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.example.android.popularmovies.MovieDetailsFragment"
+    tools:showIn="@layout/movie_details"
+    android:scrollbarAlwaysDrawVerticalTrack="true">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/Orange"
+        >
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/title"
+        android:textSize="35sp"
+        android:textColor="@color/White"
+        android:fontFamily="sans-serif"
+        android:layout_marginLeft="10dp"
+        android:paddingBottom="10dp"
+        />
+    </FrameLayout>
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:id="@+id/poster"
+        android:scaleType="fitXY"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:id="@+id/releaseheading"
+            android:text="@string/releaseDateHeading"
+            android:layout_toRightOf="@+id/poster"
+            android:layout_marginLeft="20dp"
+            android:layout_marginTop="30dp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/releasedate"
+            android:textSize="15sp"
+            android:layout_alignLeft="@+id/releaseheading"
+            android:layout_below="@+id/releaseheading"
+
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/ratingheading"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            android:text="@string/ratingHeading"
+            android:layout_alignLeft="@+id/releaseheading"
+            android:layout_marginTop="40dp"
+            android:layout_below="@+id/releasedate"
+            />
+        <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/rating"
+        android:layout_alignLeft="@+id/ratingheading"
+            android:layout_below="@+id/ratingheading"
+            />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:textStyle="bold"
+        android:layout_marginTop="30dp"
+        android:text="@string/overviewHeading"
+        android:layout_marginLeft="10dp"
+        android:id="@+id/overviewheading"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/poster"/>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:background="@color/Orange"
+            android:id="@+id/border"
+            android:layout_below="@+id/overviewheading"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/overview"
+        android:textSize="16sp"
+        android:layout_alignLeft="@+id/overviewheading"
+        android:layout_below="@+id/border"
+        android:layout_marginTop="5dp"
+        android:paddingBottom="15dp"
+        />
+    </RelativeLayout>
+
+
+</LinearLayout>
+</ScrollView>

@@ -1,52 +1,239 @@
 package com.example.android.popularmovies;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
+import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.preference.PreferenceManager;
+import android.support.annotation.Nullable;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v4.widget.CursorAdapter;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-
+import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 
+import com.example.android.popularmovies.db.MovieContract;
 import com.squareup.picasso.Picasso;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.ArrayList;
+import java.io.File;
 import android.support.v4.app.Fragment;
+import android.widget.Spinner;
+import android.widget.TextView;
 
-public class MoviesFragment extends Fragment  {
+public class MoviesFragment extends Fragment implements LoaderCallbacks<Cursor> {
     private ImageAdapter posterImageAdapter = null;
-    private ArrayList<MovieDetails> movieDetailsList ;
-    //class variable to determine weather to load main movies again or not
-    boolean isPreferenceChanged ;
+    int check =0;
+    DetailCallback detailCallback;
+    static Cursor mCursor =null;
+    static int spinner_position = 0;
+    static final int POPULAR_MOVIES_LOAD = 1;
+    static final int TOPRATED_MOVIES_LOAD = 2;
+    static final int FAVOURITE_MOVIES_LOAD = 3;
+    public interface DetailCallback
+    {
+        public void onItemSelected(Uri detailURI, int position);
+    }
 
+
+    static  final String[] popularmovie_projection =
+            {
+                    MovieContract.PopularMovieEntry._ID,
+                    MovieContract.PopularMovieEntry.MOVIE_ID,
+                    MovieContract.PopularMovieEntry.IMAGE_URL,
+                    MovieContract.PopularMovieEntry.RATING,
+                    MovieContract.PopularMovieEntry.RELEASE_DATE,
+                    MovieContract.PopularMovieEntry.SYNOPSIS,
+                    MovieContract.PopularMovieEntry.TITLE,
+
+            };
+
+    int IMOVIE_ID=1;
+    int IIMAGE_URL=2;
+    int IRATING=3;
+    int IRELEASE_DATE=4;
+    int ISYNOPSIS=5;
+    int ITITLE=6;
+
+
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        final int rotation = getResources().getConfiguration().orientation;
+        final Intent message = getActivity().getIntent();
+        TextView t =(TextView) getActivity().findViewById(R.id.nomoviemessage);
+        ImageView i = (ImageView) getActivity().findViewById(R.id.sorry);
+        int id = loader.getId();
+        switch (id)
+        {
+            case POPULAR_MOVIES_LOAD:
+                t = (TextView) getActivity().findViewById(R.id.nomoviemessage);
+                if(Utility.getSortedSetting(getActivity()).equals(getString(R.string.popular_preference_key))) {
+                    if(data.getCount()==0) {
+                        t.setText(getString(R.string.no_fav_movie_message));
+                        posterImageAdapter.swapCursor(null);
+                        return;
+                    }
+                    t.setVisibility(View.INVISIBLE);
+                    i.setVisibility(View.INVISIBLE);
+                    posterImageAdapter.swapCursor(data);
+                    mCursor = data;
+                    data.moveToFirst();
+                    GridView g =(GridView)getActivity().findViewById(R.id.movie_thumbnail_view);
+                    g.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                             // Save a local reference rather than calling `getListView()` three times
+                            if( rotation==Configuration.ORIENTATION_LANDSCAPE && (message!=null &&
+                                    message.getIntExtra(getString(R.string.position),-9)!=-9 ) )
+                                doNext2();
+                            else {
+                                if (rotation == Configuration.ORIENTATION_LANDSCAPE &&
+                                        getActivity().findViewById(R.id.tab_detail_container) != null &&
+                                        ((message != null && message.getIntExtra(getString(R.string.position), -9) == -9) || (message == null)))
+                                    doNext();
+                            }}
+                    }, 0);
+
+                }break;
+            case TOPRATED_MOVIES_LOAD:
+
+                if(Utility.getSortedSetting(getActivity()).equals(getString(R.string.toprated_preference_key))) {
+                    if(data.getCount()==0) {
+                        t.setText(getString(R.string.no_fav_movie_message));
+                        posterImageAdapter.swapCursor(null);
+                        return;
+                    }
+                    i.setVisibility(View.INVISIBLE);
+                    t.setVisibility(View.INVISIBLE);
+                    posterImageAdapter.swapCursor(data);
+                    mCursor = data;
+                    data.moveToFirst();
+                    GridView g =(GridView)getActivity().findViewById(R.id.movie_thumbnail_view);
+                    g.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if( rotation==Configuration.ORIENTATION_LANDSCAPE && (message!=null &&  message.getIntExtra(getString(R.string.position),-9)!=-9 ) )
+                                doNext2();
+                            else {
+                                if (rotation == Configuration.ORIENTATION_LANDSCAPE && getActivity().findViewById(R.id.tab_detail_container) != null &&
+                                        ((message != null && message.getIntExtra(getString(R.string.position), -9) == -9) || (message == null)))
+                                    doNext();
+                            }}
+                    },0);
+                }
+
+                break;
+            case FAVOURITE_MOVIES_LOAD:
+
+                if(Utility.getSortedSetting(getActivity()).equals(getString(R.string.favourite_preference_key))) {
+
+                    if(data.getCount()==0) {
+                        t.setText(getString(R.string.no_fav_movie_message));
+                        t.setVisibility(View.VISIBLE);
+                        i.setVisibility(View.VISIBLE);
+                        posterImageAdapter.swapCursor(null);
+                        return;
+                    }
+                    t.setVisibility(View.INVISIBLE);
+                    i.setVisibility(View.INVISIBLE);
+                    posterImageAdapter.swapCursor(data);
+                    mCursor = data;
+                    data.moveToFirst();
+                    GridView g =(GridView)getActivity().findViewById(R.id.movie_thumbnail_view);
+                    g.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if( rotation==Configuration.ORIENTATION_LANDSCAPE && (message!=null &&  message.getIntExtra(getString(R.string.position),-9)!=-9 ) )
+                                doNext2();
+                            else {
+                                if (rotation == Configuration.ORIENTATION_LANDSCAPE && getActivity().findViewById(R.id.tab_detail_container) != null &&
+                                        ((message != null && message.getIntExtra(getString(R.string.position), -9) == -9) || (message == null)))
+                                    doNext();
+                            }}
+                    }, 0);
+                }
+
+                break;
+
+        }
+
+
+
+
+
+    }
+
+    public void doNext()
+    {
+
+        GridView g = (GridView) getActivity().findViewById(R.id.movie_thumbnail_view);
+        g.getOnItemClickListener().onItemClick(g, null, 0, 1);
+        g.setSelection(0);
+    }
+
+    public void doNext2()
+    {
+
+        {
+            GridView g = (GridView) getActivity().findViewById(R.id.movie_thumbnail_view);
+            g.getOnItemClickListener().onItemClick(g, null, getActivity().getIntent().getIntExtra(getString(R.string.position),-9), 1);
+            g.setSelection(getActivity().getIntent().getIntExtra(getString(R.string.position),-9));
+            getActivity().setIntent(null);
+
+        }}
+
+
+
+    @Override
+    public void onAttach(Activity activity) {
+
+         detailCallback = (DetailCallback) activity;
+        super.onAttach(activity);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        switch (id)
+        {
+
+            case POPULAR_MOVIES_LOAD:
+                CursorLoader cl= new CursorLoader(getActivity(), MovieContract.PopularMovieEntry.CONTENT_URI,popularmovie_projection
+                        ,null,null,null);
+                return cl;
+
+            case TOPRATED_MOVIES_LOAD:
+                CursorLoader cl2= new CursorLoader(getActivity(), MovieContract.TopRatedMovieEntry.CONTENT_URI,popularmovie_projection
+                        ,null,null,null);
+                return cl2;
+            case FAVOURITE_MOVIES_LOAD:
+                CursorLoader cl3 = new CursorLoader(getActivity(), MovieContract.FavouriteMovieEntry.CONTENT_URI, null
+                        , null,null,null);
+                return cl3;
+        }
+         return null;
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+        posterImageAdapter.swapCursor(null);
+    }
 
     public MoviesFragment() {
         // Required empty public constructor
@@ -57,51 +244,145 @@ public class MoviesFragment extends Fragment  {
     public void onCreate(Bundle savedInstanceState) {
 
         setHasOptionsMenu(true);
-        if(savedInstanceState!=null) {
+        String pref = PreferenceManager.getDefaultSharedPreferences(getActivity()).getString(getString(R.string.sort_preference_key), getString(R.string.popular_preference_key));
+        check =0;
 
-            movieDetailsList = savedInstanceState.getParcelableArrayList(getString(R.string.movie_details));
-            posterImageAdapter = new ImageAdapter(getActivity(), movieDetailsList);
-            posterImageAdapter.notifyDataSetChanged();
-            posterImageAdapter.setNotifyOnChange(true);
-
-        }
-        else
         {
-            movieDetailsList = new ArrayList<MovieDetails>();
-            posterImageAdapter = new ImageAdapter(getActivity(), movieDetailsList);
-            posterImageAdapter.setNotifyOnChange(true);
+            if(pref.equals(getString(R.string.popular_preference_key)))
+            {
+                spinner_position = 0;
 
+            }
+            else
+            {if(pref.equals(getString(R.string.popular_preference_key)))
+                {
+                    spinner_position =1;
+                }
+             if(pref.equals(getString(R.string.popular_preference_key)))
+            {       spinner_position =2;
+             }
+            }
         }
+
+
+        posterImageAdapter = new ImageAdapter(getContext(), null);
         super.onCreate(savedInstanceState);
+
+
+    }
+
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        Loader<Cursor> loader = getLoaderManager().getLoader(POPULAR_MOVIES_LOAD);
+
+        if (loader != null && loader.isReset()) {
+            getLoaderManager().restartLoader(POPULAR_MOVIES_LOAD, null,this);
+        } else {
+            getLoaderManager().initLoader(POPULAR_MOVIES_LOAD, null, this);
+        }
+        loader = getLoaderManager().getLoader(TOPRATED_MOVIES_LOAD);
+
+        if (loader != null && loader.isReset()) {
+            getLoaderManager().restartLoader(TOPRATED_MOVIES_LOAD, null,this);
+        } else {
+            getLoaderManager().initLoader(TOPRATED_MOVIES_LOAD, null, this);
+        }
+         loader = getLoaderManager().getLoader(FAVOURITE_MOVIES_LOAD);
+        if (loader != null && loader.isReset()) {
+            getLoaderManager().restartLoader(FAVOURITE_MOVIES_LOAD, null,this);
+        } else {
+            getLoaderManager().initLoader(FAVOURITE_MOVIES_LOAD, null, this);
+        }
+
+
+            super.onActivityCreated(savedInstanceState);
 
     }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.menu_movie_details, menu);
-        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_settings, menu);
+        MenuItem item = menu.findItem(R.id.spinner);
+        Spinner spinner = (Spinner) MenuItemCompat.getActionView(item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
+                R.array.SortBy_Entries, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(
+                new AdapterView.OnItemSelectedListener() {
+                    @Override
+                    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                     int code = position;
+                        spinner_position = position;
+                        SharedPreferences.Editor e;
+                     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+                        switch (code)
+                        {
+                            case 0:
+                                e = sp.edit().putString(getString(R.string.sort_preference_key), getString(R.string.popular_preference_key));
+                                e.commit();
+                                check++;
+
+                                if(check>1) {
+                                    restartLoad(POPULAR_MOVIES_LOAD);
+                                }
+                                break;
+                            case 1:
+                                e = sp.edit().putString(getString(R.string.sort_preference_key), getString(R.string.toprated_preference_key));
+                                e.commit();
+                                check++;
+                                if(check>1) {
+                                    restartLoad(TOPRATED_MOVIES_LOAD);
+                                    }
+                                break;
+                            case 2:
+                                e = sp.edit().putString(getString(R.string.sort_preference_key), getString(R.string.favourite_preference_key));
+                                e.commit();
+                                check++;
+                                if(check>1) {
+                                    restartLoad(FAVOURITE_MOVIES_LOAD);
+                                }break;
+                        }
+
+                    }
+
+
+                    @Override
+                    public void onNothingSelected(AdapterView<?> parent) {
+
+
+                    }
+                }
+
+        );
+        spinner.setSelection(spinner_position);
         super.onCreateOptionsMenu(menu, inflater);
 
     }
+
+
+
+    void restartLoad(int id)
+    {
+        Loader<Cursor> loader = getLoaderManager().getLoader(id);
+
+        if (loader != null && loader.isReset()) {
+            getLoaderManager().restartLoader(id, null,this);
+        } else {
+            getLoaderManager().initLoader(id, null, this);
+        }
+    }
+
 
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-        if(id == R.id.action_settings)
-        {
-            Intent preferenceActivityIntent = new Intent(getActivity(), SettingsActivity.class);
-            startActivity(preferenceActivityIntent);
-        }
-        if(id == R.id.action_refresh)
-        {
-            updateMovies();
-        }
+    public void onResume() {
 
-        return super.onOptionsItemSelected(item);
+        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        super.onResume();
     }
 
-    /* Method to create the alert Dialogue in case of internat connection is not available */
     void createNetworkErrorDialogue() {
         String alertTitle=getString(R.string.network_dialog_title);
         String alertMessage = getString(R.string.network_dialog_message);
@@ -116,63 +397,6 @@ public class MoviesFragment extends Fragment  {
         });
         networkErrorDialog.create().show();
     }
-
-
-    @Override
-    public void onResume() {
-        SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getActivity().getApplicationContext());
-        isPreferenceChanged = pref.getBoolean(getString(R.string.preference_change_key), true);
-        if(isPreferenceChanged)
-            updateMovies();
-        pref.edit().putBoolean(getString(R.string.preference_change_key), false).commit();
-        super.onResume();
-    }
-
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        final String POSTER_PATH = getString(R.string.poster);
-        final String TITLE = getString(R.string.title);
-        final String RATING = getString(R.string.rating);
-        final String OVERVIEW = getString(R.string.overview);
-        final String RELEASE_DATE = getString(R.string.releaseDate);
-        View movieFragmentView = inflater.inflate(R.layout.fragment_movies, container, false);
-        GridView posterGridView = (GridView) movieFragmentView.findViewById(R.id.movie_thumbnail_view);
-        posterGridView.setAdapter(posterImageAdapter);
-        posterGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent movieDetailIntent = new Intent(getActivity(), MovieDetailsActivity.class);
-                ImageAdapter adapter= (ImageAdapter) parent.getAdapter();
-                MovieDetails obj  = adapter.getItem(position);
-                movieDetailIntent.putExtra(TITLE, obj.title);
-                movieDetailIntent.putExtra(RATING,obj.UserRating);
-                movieDetailIntent.putExtra(OVERVIEW, obj.overview);
-                movieDetailIntent.putExtra(RELEASE_DATE,obj.ReleaseDate);
-                movieDetailIntent.putExtra(POSTER_PATH, obj.ImageUrl);
-                startActivity(movieDetailIntent);
-            }
-        });
-
-        return movieFragmentView;
-    }
-
-/* method  to update movies in ui before updating it will check the availablity of internet connection*/
-    void updateMovies()
-    {
-        if(isDeviceOnline()==false) {
-            createNetworkErrorDialogue();
-        }
-        else {
-            FetchMoviesTask moviesTask = new FetchMoviesTask();
-            //movieDetailsList.clear();
-            moviesTask.execute();
-        }
-
-    }
-
-    // method to check if device has access to internet connection
     boolean isDeviceOnline()
     {
         ConnectivityManager connManager = (ConnectivityManager) getActivity().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -180,16 +404,71 @@ public class MoviesFragment extends Fragment  {
         return (activeNetwork!=null && activeNetwork.isConnected());
     }
 
-    public void updateImages(JSONArray jsonArray)
-    {
-            extractMovieDetails(jsonArray);
+
+
+
+
+
+
+
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+
+        final String URI = getString(R.string.uri);
+        View movieFragmentView = inflater.inflate(R.layout.fragment_movies, container, false);
+        GridView posterGridView = (GridView) movieFragmentView.findViewById(R.id.movie_thumbnail_view);
+        posterGridView.setAdapter(posterImageAdapter);
+        posterGridView = (GridView) movieFragmentView.findViewById(R.id.movie_thumbnail_view);
+
+        posterGridView.setAdapter(posterImageAdapter);
+        posterGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (mCursor==null)
+                    return;
+                mCursor.moveToPosition(position);
+                String movie_id = mCursor.getString(IMOVIE_ID);
+                Intent movieDetailIntent = new Intent(getActivity(), MovieDetailsActivity.class);
+                Uri detailuri=null;
+                if(Utility.getSortedSetting(getActivity()).equals(getString(R.string.popular_preference_key))) {
+                    detailuri = MovieContract.PopularMovieEntry.buildMovieUriWithId(Long.valueOf(movie_id));
+                    movieDetailIntent.putExtra(URI, detailuri.toString());
+                    movieDetailIntent.putExtra(getString(R.string.position),position);
+                }
+                else {
+                    if (Utility.getSortedSetting(getActivity()).equals(getString(R.string.toprated_preference_key))) {
+                        detailuri = MovieContract.TopRatedMovieEntry.buildMovieUriWithId(Long.valueOf(movie_id));
+                        movieDetailIntent.putExtra(URI, detailuri.toString());
+                        movieDetailIntent.putExtra(getString(R.string.position),position);
+                    } else {
+                        int idx = mCursor.getColumnIndex(MovieContract.FavouriteMovieEntry.MOVIE_ID);
+                        movie_id = mCursor.getString(idx);
+                        detailuri = MovieContract.FavouriteMovieEntry.buildMovieUriWithId(Long.valueOf(movie_id));
+                        movieDetailIntent.putExtra(URI, detailuri.toString());
+                        movieDetailIntent.putExtra(getString(R.string.position),position);
+                    }
+                }
+
+                if(getActivity().findViewById(R.id.tab_detail_container)!=null)
+                {
+                   detailCallback.onItemSelected(detailuri, position);
+                }
+                else
+                startActivity(movieDetailIntent);
+            }
+        });
+
+        return movieFragmentView;
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList(getString(R.string.movie_details), movieDetailsList);
         super.onSaveInstanceState(outState);
     }
+
+
 
     @Override
     public void onPause() {
@@ -197,217 +476,53 @@ public class MoviesFragment extends Fragment  {
         super.onPause();
     }
 
-    public class MovieDetails implements Parcelable {
-        String title;
-        String overview;
-        String ReleaseDate;
-        String UserRating;
-        String ImageUrl;
 
-        MovieDetails()
-        {
 
-        }
+    public class ImageAdapter extends CursorAdapter {
+        public ImageAdapter(Context ctx,  Cursor crsr) {
+            super(ctx, crsr, false);
+         }
 
-        protected MovieDetails(Parcel in) {
-            title = in.readString();
-            overview = in.readString();
-            ReleaseDate = in.readString();
-            UserRating = in.readString();
-            ImageUrl = in.readString();
+        @Override
+        public int getViewTypeCount() {
+            return 1;
         }
 
         @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            dest.writeString(title);
-            dest.writeString(overview);
-            dest.writeString(ReleaseDate);
-            dest.writeString(UserRating);
-            dest.writeString(ImageUrl);
-        }
-
-
-        public final Parcelable.Creator<MovieDetails> CREATOR = new Parcelable.Creator<MovieDetails>() {
-            @Override
-            public MovieDetails createFromParcel(Parcel in) {
-                return new MovieDetails(in);
-            }
-
-            @Override
-            public MovieDetails[] newArray(int size) {
-                return new MovieDetails[size];
-            }
-        };
-    }
-
-    MovieDetails[] extractMovieDetails(JSONArray jsonArray)
-    {
-        int length = jsonArray.length();
-        MovieDetails[] movie_details = new MovieDetails[length];
-        final String LOG_TAG = getString(R.string.extract_movie_log_tag);
-
-        try {
-            final String POSTER_PATH = getString(R.string.poster);
-            final String TITLE = getString(R.string.title);
-            final String RATING = getString(R.string.rating);
-            final String OVERVIEW = getString(R.string.overview);
-            final String RELEASE_DATE = getString(R.string.releaseDate);
-            final String BaseUrl = BuildConfig.IMAGE_BASE_URL;
-            for (int i = 0; i < length; i++) {
-
-                JSONObject json_movie_details = jsonArray.getJSONObject(i);
-                movie_details[i]= new MovieDetails();
-                movie_details[i].ImageUrl =BaseUrl+json_movie_details.getString(POSTER_PATH);
-                movie_details[i].title = json_movie_details.getString(TITLE);
-                movie_details[i].overview = json_movie_details.getString(OVERVIEW);
-                movie_details[i].UserRating = json_movie_details.getString(RATING);
-                movie_details[i].ReleaseDate = json_movie_details.getString(RELEASE_DATE);
-                movieDetailsList.add(movie_details[i]);
-            }
-        }
-        catch(JSONException e)
+        public void bindView(View view, Context context, Cursor cursor) {
+            ImageView imageView = (ImageView) view.findViewById(R.id.movie_poster);
+            int imageurl_index = cursor.getColumnIndex(MovieContract.PopularMovieEntry.IMAGE_URL);
+            String setting = Utility.getSortedSetting(getActivity());
+            if(getActivity().getResources().getBoolean(R.bool.isTab)==true)
+               Utility.getImageBitmap(getActivity(), getString(R.string.image_size)+cursor.getString(imageurl_index).substring(1), setting, imageView);
+            else
             {
-              Log.e(LOG_TAG, e.getMessage());
-            }
-        return movie_details;
-    }
+                try{
 
-
-    class FetchMoviesTask extends AsyncTask<Void, Void, JSONArray> {
-
-        @Override
-        protected JSONArray doInBackground(Void... params) {
-            URL url = null;
-            final String RESULTS = getString(R.string.result_key);
-            final String API_KEY = getString(R.string.apiKeyQueryStringParameter);
-            final String LOG_KEY = getString(R.string.asyncTask_log_tag);
-
-            String SORT_ORDER_PREFERENCE = getString(R.string.sort_preference_key);
-            URLConnection connection = null;
-            JSONArray movie_details=null;
-            try {
-
-                Uri.Builder uri = Uri.parse(BuildConfig.MOVIE_DB_API).buildUpon();
-                SharedPreferences pref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-                String category = pref.getString(SORT_ORDER_PREFERENCE, getString(R.string.popular_preference_key));
-                uri.appendPath(category);
-                uri.appendQueryParameter(API_KEY, BuildConfig.MOVIE_DB_API_KEY);
-                String url_string = uri.build().toString();
-                url = new URL(url_string);
-                connection = url.openConnection();
-                connection.setDoInput(true);
-                InputStream is = connection.getInputStream();
-                InputStreamReader isr = new InputStreamReader(is);
-                BufferedReader br = new BufferedReader(isr);
-                StringBuffer buffer = new StringBuffer();
-                String line;
-                while ((line = br.readLine()) != null) {
-                    buffer.append(line);
+                    File f1 = getActivity().getFilesDir();
+                    File f2 =  new File(f1,getString(R.string.slash)+setting+getString(R.string.slash)+getString(R.string.image_size)
+                            +cursor.getString(imageurl_index).substring(1));
+                    Picasso.with(getActivity()).load(f2).into(imageView);
+                    return;
                 }
-                JSONObject json_response = new JSONObject(buffer.toString());
-                movie_details = json_response.getJSONArray(RESULTS);
-
-            } catch (JSONException e) {
-                Log.e(LOG_KEY, e.getMessage());
-            } catch (MalformedURLException e) {
-                Log.e(LOG_KEY, e.getMessage());
-            } catch (IOException e) {
-                Log.e(LOG_KEY, e.getMessage());
+                catch(Exception e){
+                    e.printStackTrace();
+                }
             }
-
-            return movie_details;
-        }
-
-        @Override
-        protected void onPostExecute(JSONArray jsonArray) {
-           posterImageAdapter.clear();
-            updateImages(jsonArray);
-            posterImageAdapter.notifyDataSetChanged();
-            super.onPostExecute(jsonArray);
-        }
-
-    }
-
-    public class PosterViewHolder
-    {
-        ImageView posterImage;
-    }
-
-    public class ImageAdapter extends ArrayAdapter<MovieDetails> {
-        ArrayList<MovieDetails> movie_details = null;
-        private Context context;
-
-        public ImageAdapter(Context c,  ArrayList<MovieDetails> movie_details) {
-            super(c, R.layout.movie_poster_view, movie_details);
-            this.movie_details = movie_details;
-            this.context = c;
-        }
-
-        public int getCount()
-        {
-            return movie_details.toArray().length;
-        }
-
-        @Override
-        public MovieDetails getItem(int position) {
-            return super.getItem(position);
-        }
-
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        // create a new ImageView for each item referenced by the Adapter
-        public ImageView getView(int position, View convertView, ViewGroup parent) {
-            MovieDetails mDetails = getItem(position);
-            ImageView imageView = (ImageView) convertView;
-            PosterViewHolder holder;
-
-            if (convertView == null) {
-                // if it's not recycled, initialize some attributes
-                LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                View v = inflater.inflate(R.layout.movie_poster_view, parent, false);
-                imageView = (ImageView) v.findViewById(R.id.movie_poster);
-                Picasso.with(getActivity()).load(movie_details.get(position).ImageUrl).into(imageView);
-                holder = new PosterViewHolder();
-                holder.posterImage = imageView;
-                imageView.setTag(holder);
-
-            } else {
-                holder = (PosterViewHolder)convertView.getTag();
-            }
-            if(mDetails!=null)
-                Picasso.with(getActivity()).load(mDetails.ImageUrl).into(holder.posterImage);
             imageView.setAdjustViewBounds(true);
             imageView.setScaleType(ImageView.ScaleType.FIT_XY);
             imageView.setPadding(0,0,0,0);
-            return imageView;
         }
+
+        @Override
+        public View newView(Context context, Cursor cursor, ViewGroup parent) {
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+            View v = inflater.inflate(R.layout.movie_poster_view, parent, false);
+            return v;
+        }
+
     }
 
 
-
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

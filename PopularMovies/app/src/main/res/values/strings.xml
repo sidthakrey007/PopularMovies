@@ -1,33 +1,56 @@
 <resources>
-    <string name="app_name">PopularMovies</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="title_activity_movie_details">MovieDetailsActivity</string>
-    <string name="action_settings">Settings</string>
-    <string name="title_activity_settings">SettingsActivity</string>
-    <string name = "sort_preference_title">SortBy</string>
-    <string name="sort_preference_key">sort_order</string>
-    <string name="sort_preference_popular">Popular</string>
-    <string name = "network_dialog_title">Network Error</string>
-    <string name="network_dialog_message">Sorry.Internet Connection not available</string>
-    <string name = "action_refresh">Refresh</string>
-    <string name="preference_change_key">isPreferenceChanged</string>
-    <string name="movie_thumbnail_fragment">moviefragment</string>
-    <string name="movie_detail_fragment">mDetails</string>
-    <string name="rating">vote_average</string>
-    <string name="title">title</string>
-    <string name="releaseDate">release_date</string>
-    <string name="poster">poster_path</string>
-    <string name="overview">overview</string>
-    <string name="rate_on_ten">/10</string>
-    <string name="movie_details">movieData</string>
-    <string name="extract_movie_log_tag">extractMovies</string>
-    <string name="result_key">results</string>
-    <string name="apiKeyQueryStringParameter">api_key</string>
-    <string name="asyncTask_log_tag">AsyncTask</string>
-    <string name="popular_preference_key">popular</string>
-    <string name="okButtonTitle">OK</string>
+    <string name="app_name" translatable="false">PopularMovies</string>
+    <string name="hello_blank_fragment" translatable="false">Hello blank fragment</string>
+    <string name="title_activity_movie_details" translatable="false">MovieDetailsActivity</string>
+    <string name="action_settings" translatable="false">Settings</string>
+    <string name="title_activity_settings" translatable="false">SettingsActivity</string>
+    <string name = "sort_preference_title" translatable="false">SortBy</string>
+    <string name="sort_preference_key" translatable="false">sort_order</string>
+    <string name="sort_preference_popular" translatable="false">Popular</string>
+    <string name = "network_dialog_title" translatable="false">Network Error</string>
+    <string name="network_dialog_message" translatable="false">Sorry.Internet Connection not available</string>
+    <string name = "action_refresh" translatable="false">Refresh</string>
+    <string name="preference_change_key" translatable="false">isPreferenceChanged</string>
+    <string name="movie_thumbnail_fragment" translatable="false">moviefragment</string>
+    <string name="movie_detail_fragment" translatable="false">mDetails</string>
+    <string name="rating" translatable="false">vote_average</string>
+    <string name="title" translatable="false">title</string>
+    <string name="releaseDate" translatable="false">release_date</string>
+    <string name="poster" translatable="false">poster_path</string>
+    <string name="overview" translatable="false">overview</string>
+    <string name="rate_on_ten" translatable="false">/10</string>
+    <string name="movie_details" translatable="false">movieData</string>
+    <string name="extract_movie_log_tag" translatable="false">extractMovies</string>
+    <string name="result_key" translatable="false">results</string>
+    <string name="apiKeyQueryStringParameter" translatable="false">api_key</string>
+    <string name="asyncTask_log_tag" translatable="false">AsyncTask</string>
+    <string name="popular_preference_key" translatable="false">popular</string>
+    <string name="toprated_preference_key" translatable="false">top_rated</string>
+    <string name="favourite_preference_key" translatable="false">favourite</string>
+    <string name="okButtonTitle" translatable="false">OK</string>
     <string name="settings_fragment_key">settingsFragment</string>
-    <string name="overviewHeading">Overview</string>
-    <string name="ratingHeading">Rating</string>
-    <string name="releaseDateHeading">Release Date</string>
+    <string  name="overviewHeading" translatable="false">Overview</string>
+    <string name="trailerHeading" translatable="false">Trailers</string>
+    <string name="reviewsHeading" translatable="false">Reviews</string>
+    <string name="ratingHeading" translatable="false">Rating</string>
+    <string name="cp_delete_exception_msg" translatable="false">Exception raised in delete</string>
+    <string name="releaseDateHeading" translatable="false">Release Date</string>
+    <string name="no_fav_movie_message" translatable="false">SORRY NO MOVIES YET!!</string>
+    <string name="sync_account_type" translatable="false">com.example.popularmovies</string>
+    <string name="content_authority" translatable="false">com.example.android.popularmovies</string>
+    <string name="but_movie_id_tag" translatable="false">Movie_id</string>
+    <string name="but_image_name_tag" translatable="false">Movie_id</string>
+    <string name="uri" translatable="false">uri</string>
+    <string name="position" translatable="false">POS</string>
+
+    <string name="toast_message_fav_movie_save" translatable="false">"marked as favourite"</string>
+    <string name="but_setting_tag" translatable="false">Movie_id</string>
+    <string name="movie_id" translatable="false">movie_id</string>
+    <string name="image_size" translatable="false">w500</string>
+    <string name="slash" translatable="false">/</string>
+    <string name="detail_frag_tag" translatable="false">DET</string>
+    <string name="youtube_uri" translatable="false">http://www.youtube.com/watch?v=</string>
+    <string name="query_parameter" translatable="false">= ?</string>
+    <string name="fav_but_text" translatable="false">MARK FAVOURITE</string>
+
 </resources>

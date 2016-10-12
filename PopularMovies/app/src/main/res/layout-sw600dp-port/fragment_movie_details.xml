@@ -2,7 +2,6 @@
     android:orientation="vertical"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:id="@+id/small_layout"
     android:background="#E7E0DB"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -33,7 +32,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/title"
-        android:textSize="35sp"
+        android:textSize="58sp"
+        android:textStyle="normal"
+
         android:textColor="@color/White"
         android:fontFamily="sans-serif-smallcaps"
         android:layout_marginLeft="10dp"
@@ -41,39 +42,42 @@
         />
     </FrameLayout>
     <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-    <ImageView
-        android:layout_width="188dp"
-        android:layout_height="280dp"
-        android:id="@+id/poster"
 
-        />
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:layout_width="265dp"
+            android:layout_height="398dp"
+            android:id="@+id/poster"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
+
+            />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="22sp"
+            android:textSize="40sp"
             android:id="@+id/releaseheading"
             android:text="@string/releaseDateHeading"
             android:textColor="#000000"
-            android:layout_toRightOf="@id/poster"
-            android:layout_marginLeft="5dp"
-            android:layout_marginTop="30dp"
+            android:layout_toRightOf="@+id/poster"
+            android:layout_marginLeft="60dp"
+            android:layout_marginTop="50dp"
             />
-
         <ImageView
-            android:layout_marginLeft="2dp"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignTop="@id/releaseheading"
             android:layout_toRightOf="@id/releaseheading"
-            android:src = "@drawable/calendar_small"/>
+            android:src = "@mipmap/release_date"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/releasedate"
-            android:textSize="15sp"
+            android:textSize="28sp"
             android:textColor="#000000"
             android:layout_alignLeft="@+id/releaseheading"
             android:layout_below="@+id/releaseheading"
@@ -83,24 +87,25 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/ratingheading"
-            android:textSize="22sp"
+            android:textSize="40sp"
             android:textColor="#000000"
             android:text="@string/ratingHeading"
-            android:layout_alignLeft="@id/releaseheading"
+            android:layout_alignLeft="@+id/releaseheading"
             android:layout_marginTop="20dp"
-            android:layout_below="@id/releasedate"
+            android:layout_below="@+id/releasedate"
             />
         <ImageView
-            android:layout_marginLeft="2dp"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_marginLeft="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignTop="@id/ratingheading"
             android:layout_toRightOf="@id/ratingheading"
-            android:src = "@drawable/start_small"/>
+            android:src = "@mipmap/rating"/>
         <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/rating"
+            android:textSize="28sp"
         android:layout_alignLeft="@+id/ratingheading"
             android:textColor="#000000"
             android:layout_below="@+id/ratingheading"
@@ -122,7 +127,8 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="25sp"
+        android:textSize="32sp"
+        android:textStyle="bold"
         android:layout_marginTop="30dp"
         android:textColor="#000000"
         android:text="@string/overviewHeading"
@@ -135,16 +141,15 @@
             android:layout_height="2dp"
             android:background="@color/Orange"
             android:id="@+id/border"
-            android:layout_below="@id/overviewheading"/>
+            android:layout_below="@+id/overviewheading"/>
 
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:fontFamily="sans-serif-condensed"
         android:id="@+id/overview"
-        android:textSize="16sp"
-        android:layout_alignLeft="@id/overviewheading"
+        android:textSize="22sp"
+        android:layout_alignLeft="@+id/overviewheading"
         android:layout_below="@+id/border"
         android:layout_marginTop="5dp"
         android:paddingBottom="15dp"
@@ -154,46 +159,49 @@
 
 
     </RelativeLayout>
-    <RelativeLayout
-        android:layout_marginBottom="10dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-    <TextView
-        android:id="@+id/trailersheading"
-        android:layout_marginTop="20dp"
+
+  <RelativeLayout
+      android:layout_marginTop="20dp"
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content">  <TextView
+      android:id="@+id/trailersheading"
+      android:layout_marginTop="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/trailerHeading"
         android:paddingLeft="16dp"
-        android:textSize="25sp"
+        android:textSize="32sp"
+        android:textStyle="bold"
         android:textColor="#000000"
+        android:fontFamily="sans-serif"
         />
     <ImageView
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
         android:layout_alignBottom="@id/trailersheading"
         android:layout_toRightOf="@id/trailersheading"
-        android:src="@drawable/trailer_small"
+        android:src="@drawable/trailer"
         />
-</RelativeLayout>
+  </RelativeLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:layout_marginBottom="10dp"
         android:background="@color/Orange"
         android:id="@+id/border_3"
-        android:layout_below="@id/overviewheading"/>
+        android:layout_below="@+id/overviewheading"/>
 
     <android.support.v7.widget.CardView
         xmlns:card_view="http://schemas.android.com/apk/res-auto"
         android:id="@+id/card_view_trailer"
         android:layout_gravity="center"
+        card_view:cardBackgroundColor="#D3D3D3"
+
         android:layout_width="match_parent"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        card_view:cardBackgroundColor="#D3D3D3"
-        android:layout_height="200dp"
+        android:layout_height="300dp"
         android:background="@color/Orange"
         card_view:cardElevation="25dp"
 
@@ -206,32 +214,35 @@
         android:layout_marginRight="10dp"
         android:fadeScrollbars="true"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="300dp"
         />
 </android.support.v7.widget.CardView>
     <RelativeLayout
         android:layout_marginTop="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-        <TextView
+    <TextView
+
         android:id="@+id/reviewsheading"
         android:layout_marginTop="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/reviewsHeading"
         android:paddingLeft="16dp"
-        android:textSize="25sp"
+        android:textSize="32sp"
+        android:textStyle="bold"
         android:textColor="#000000"
+        android:fontFamily="sans-serif"
         />
-    <ImageView
-        android:layout_width="32dp"
-        android:layout_height="32dp"
-        android:layout_marginLeft="10dp"
-        android:layout_alignBottom="@id/reviewsheading"
-        android:layout_toRightOf="@id/reviewsheading"
-        android:src="@drawable/review_small"
-        />
-</RelativeLayout>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:layout_alignBottom="@id/reviewsheading"
+            android:layout_toRightOf="@id/reviewsheading"
+            android:src="@drawable/review"
+            />
+    </RelativeLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
@@ -249,7 +260,7 @@
         android:layout_width="match_parent"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
-        android:layout_height="200dp"
+        android:layout_height="300dp"
         android:layout_marginBottom="50dp"
         card_view:cardCornerRadius="4dp">
 
@@ -260,7 +271,7 @@
         android:scrollbars="vertical"
         android:fadeScrollbars="true"
         android:layout_width="wrap_content"
-        android:layout_height="200dp"
+        android:layout_height="300dp"
 
 
         />

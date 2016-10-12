@@ -1,52 +1,43 @@
 package com.example.android.popularmovies;
-
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.support.v4.app.FragmentTransaction;
+import android.content.ContentValues;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
+import com.example.android.popularmovies.db.MovieContract;
+import com.example.android.popularmovies.service.SyncAdapter;
 
-public class MainActivity extends AppCompatActivity {
+import java.io.FileNotFoundException;
 
-    MoviesFragment internalFragment = null;
-    String MOVIE_FRAGMENT_KEY;
-    //During creation of activity we are making
-    // activity single top and maintaining isPreference change key
-    // in shared preference which is boolean and
-    // which tells wheather to load this activity
-    // again based on change of preference of sorting
+public class MainActivity extends AppCompatActivity implements MoviesFragment.DetailCallback{
+
+    static long MID = -1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
            super.onCreate(savedInstanceState);
-           SharedPreferences pref= PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
-           MOVIE_FRAGMENT_KEY= getString(R.string.movie_thumbnail_fragment);
+           setContentView(R.layout.activity_main);
+          SyncAdapter.initializeSyncAdapter(this);
 
-        if(savedInstanceState==null) {
-           // if this activity is created first time the set preference change key as true
-           //so that activity will reload the content
-            pref.edit().putBoolean(getString(R.string.preference_change_key), true).commit();
-            FragmentTransaction transactionManager = getSupportFragmentManager().beginTransaction();
-            internalFragment = new MoviesFragment();
-            transactionManager.replace(android.R.id.content, internalFragment).commit();
-        }
-        else
-        {
-            //else reload the same fragment
-            internalFragment = (MoviesFragment) getSupportFragmentManager().getFragment(savedInstanceState, MOVIE_FRAGMENT_KEY);
-            getSupportFragmentManager().beginTransaction().replace(android.R.id.content, internalFragment).commit();
-        }
+    }
+
+
+    @Override
+    public void onItemSelected(Uri detailURI, int position) {
+        MovieDetailsFragment df = new MovieDetailsFragment();
+        Bundle b = new Bundle();
+        MID = Long.valueOf(detailURI.getLastPathSegment());
+        b.putString(getString(R.string.uri), detailURI.toString());
+        b.putInt(getString(R.string.position), position);
+        df.setArguments(b);
+        getSupportFragmentManager().beginTransaction().replace(R.id.tab_detail_container, df, "DETAIL").commit();
 
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        getSupportFragmentManager().putFragment(outState, MOVIE_FRAGMENT_KEY, internalFragment);
-
+    protected void onResume() {
+        super.onResume();
     }
 
     @Override
@@ -54,4 +45,28 @@ public class MainActivity extends AppCompatActivity {
         onSaveInstanceState(new Bundle());
         super.onPause();
     }
+
+
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    void saveFavourite(View v) throws FileNotFoundException {
+        Button fav_button = (Button) findViewById(R.id.favourite_button);
+        Long movie_id = (Long) fav_button.getTag(R.string.but_movie_id_tag);
+        String setting =  (String) fav_button.getTag(R.string.but_setting_tag);
+        String file_name = (String) fav_button.getTag(R.string.but_image_name_tag);
+        ContentValues cv = new ContentValues();
+        cv.put(MovieContract.FavouriteMovieEntry.MOVIE_ID, movie_id);
+        cv.put(MovieContract.FavouriteMovieEntry.CATEGORY, setting);
+        getContentResolver().insert(MovieContract.FavouriteMovieEntry.CONTENT_URI,cv );
+        Utility.copyImageBitmap(this, file_name, setting, getString(R.string.favourite_preference_key));
+        Toast t = Toast.makeText(this,getString(R.string.toast_message_fav_movie_save),Toast.LENGTH_SHORT);
+
+        t.show();
+    }
+
 }
+

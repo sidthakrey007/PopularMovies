@@ -2,7 +2,6 @@
     android:orientation="vertical"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:id="@+id/small_layout"
     android:background="#E7E0DB"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -41,59 +40,61 @@
         />
     </FrameLayout>
     <RelativeLayout
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-    <ImageView
-        android:layout_width="188dp"
-        android:layout_height="280dp"
-        android:id="@+id/poster"
+        <ImageView
+            android:layout_width="265dp"
+            android:layout_height="398dp"
+            android:id="@+id/poster"
+            android:adjustViewBounds="true"
+            android:scaleType="centerCrop"
 
-        />
+            />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="22sp"
+            android:textSize="36sp"
             android:id="@+id/releaseheading"
             android:text="@string/releaseDateHeading"
             android:textColor="#000000"
-            android:layout_toRightOf="@id/poster"
-            android:layout_marginLeft="5dp"
+            android:layout_toRightOf="@+id/poster"
+            android:layout_marginLeft="30dp"
             android:layout_marginTop="30dp"
             />
-
         <ImageView
-            android:layout_marginLeft="2dp"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_marginLeft="10dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_alignTop="@id/releaseheading"
             android:layout_toRightOf="@id/releaseheading"
             android:src = "@drawable/calendar_small"/>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/releasedate"
-            android:textSize="15sp"
+            android:textSize="22sp"
             android:textColor="#000000"
-            android:layout_alignLeft="@+id/releaseheading"
-            android:layout_below="@+id/releaseheading"
+            android:layout_alignLeft="@id/releaseheading"
+            android:layout_below="@id/releaseheading"
 
             />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/ratingheading"
-            android:textSize="22sp"
+            android:textSize="36sp"
             android:textColor="#000000"
             android:text="@string/ratingHeading"
-            android:layout_alignLeft="@id/releaseheading"
+            android:layout_alignLeft="@+id/releaseheading"
             android:layout_marginTop="20dp"
             android:layout_below="@id/releasedate"
             />
         <ImageView
-            android:layout_marginLeft="2dp"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
+            android:layout_marginLeft="10dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_alignTop="@id/ratingheading"
             android:layout_toRightOf="@id/ratingheading"
             android:src = "@drawable/start_small"/>
@@ -101,6 +102,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/rating"
+        android:textSize="22sp"
         android:layout_alignLeft="@+id/ratingheading"
             android:textColor="#000000"
             android:layout_below="@+id/ratingheading"
@@ -111,7 +113,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/rating"
-            android:text="@string/fav_but_text"
+            android:text="MARK FAVOURITE"
             android:onClick="saveFavourite"
             android:textSize="14sp"
             android:textColor="#FFFFFF"
@@ -119,23 +121,23 @@
             android:paddingRight="5dp"
             android:layout_alignLeft="@id/rating"
             android:background="#2196F3"/>
-    <TextView
+        <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="25sp"
+        android:textSize="32sp"
         android:layout_marginTop="30dp"
         android:textColor="#000000"
         android:text="@string/overviewHeading"
         android:layout_marginLeft="10dp"
         android:id="@+id/overviewheading"
         android:layout_alignParentLeft="true"
-        android:layout_below="@id/poster"/>
+        android:layout_below="@+id/poster"/>
         <View
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:background="@color/Orange"
             android:id="@+id/border"
-            android:layout_below="@id/overviewheading"/>
+            android:layout_below="@+id/overviewheading"/>
 
 
     <TextView
@@ -158,6 +160,7 @@
         android:layout_marginBottom="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
+
     <TextView
         android:id="@+id/trailersheading"
         android:layout_marginTop="20dp"
@@ -165,12 +168,12 @@
         android:layout_height="wrap_content"
         android:text="@string/trailerHeading"
         android:paddingLeft="16dp"
-        android:textSize="25sp"
+        android:textSize="32sp"
         android:textColor="#000000"
         />
     <ImageView
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginLeft="10dp"
         android:layout_alignBottom="@id/trailersheading"
         android:layout_toRightOf="@id/trailersheading"
@@ -193,7 +196,7 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         card_view:cardBackgroundColor="#D3D3D3"
-        android:layout_height="200dp"
+        android:layout_height="180dp"
         android:background="@color/Orange"
         card_view:cardElevation="25dp"
 
@@ -206,32 +209,32 @@
         android:layout_marginRight="10dp"
         android:fadeScrollbars="true"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
+        android:layout_height="180dp"
         />
 </android.support.v7.widget.CardView>
     <RelativeLayout
         android:layout_marginTop="20dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-        <TextView
+    <TextView
         android:id="@+id/reviewsheading"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="30dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/reviewsHeading"
         android:paddingLeft="16dp"
-        android:textSize="25sp"
+        android:textSize="32sp"
         android:textColor="#000000"
         />
     <ImageView
-        android:layout_width="32dp"
-        android:layout_height="32dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_marginLeft="10dp"
         android:layout_alignBottom="@id/reviewsheading"
         android:layout_toRightOf="@id/reviewsheading"
         android:src="@drawable/review_small"
         />
-</RelativeLayout>
+    </RelativeLayout>
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"

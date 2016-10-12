@@ -3,6 +3,7 @@
     <array name="SortBy_Entries">
         <item >Popular</item>
         <item>TopRated</item>
+        <item>Favourite</item>
     </array>
 
     <array name="SortBy_Keys">

@@ -8,7 +8,7 @@
         android:id="@+id/movie_thumbnail_view"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:columnWidth="180dip"
+        android:columnWidth="230dip"
         android:gravity="center"
         android:clipChildren="true"
         android:numColumns="auto_fit"
@@ -23,11 +23,6 @@
 
         >
     </GridView>
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
     <TextView
         android:id="@+id/nomoviemessage"
         android:layout_width="wrap_content"
@@ -40,5 +35,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/sorry"/>
-    </LinearLayout>
+
 </FrameLayout>
